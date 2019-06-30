@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "minio": "^7.0.10",
     "vue": "^2.6.10"
   },
   "devDependencies": {
+    "@types/minio": "^7.0.2",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-plugin-typescript": "^3.8.0",

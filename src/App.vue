@@ -1,27 +1,22 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <s3-browser
+      end-point="127.0.0.1"
+      :port="9000"
+      access-key="BYKHVW0T9SPASE3LDRTR"
+      secret-key="t3DoR++bc6Zoqv55aZsDUac7HtgnPW0GW1xY677H"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import S3Browser from './components/S3Browser/S3Browser.vue';
 
 export default Vue.extend({
   name: 'app',
   components: {
-    HelloWorld,
+    S3Browser,
   },
 });
 </script>
-<style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
-</style>
