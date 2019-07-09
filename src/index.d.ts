@@ -2,11 +2,10 @@ export interface S3Folder {
   isFolder: true;
   name: string;
   prefix: string,
-  creationDate?: Date;
 }
 
 export interface S3Object {
-  isObject: true;
+  isFolder: false;
   name: string;
   lastModified: Date;
   size: number;

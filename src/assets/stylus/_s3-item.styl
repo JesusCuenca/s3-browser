@@ -1,0 +1,63 @@
+.s3-browser__item-list
+    .s3-browser__item
+        display flex
+        flex-direction row
+        flex-wrap nowrap
+        justify-content flex-start
+        padding 3px 0
+        background-color #fff
+        &:nth-child(odd) 
+            background-color #fafafa
+
+        &__avatar 
+            flex: 0 0 32px
+            padding 7px
+            text-align center
+            img 
+                width 25px
+            
+        a, span
+            display block
+            padding 7px 0
+            font-size 15px
+            text-decoration none
+        
+        &__actions
+        &__description,
+        &__size,
+        &__date
+            padding 0 5px
+            text-overflow ellipsis
+            overflow hidden
+            min-width 100px
+
+        &__description
+            flex 1 1 auto
+
+        &__actions
+            flex 0 0 auto
+        
+        &__size
+            flex 0 0 90px
+        
+        &__date
+            flex 0 0 190px
+
+        ^[0]^[0]__header .s3-browser__item
+            background-color #fff
+            border-bottom 1px solid #e5e5e5
+
+    &--empty
+        .s3-browser__item
+            &__description 
+                span
+                    text-align center
+                    font-style italic
+                    font-size 13px
+                    + span 
+                        padding-top 0
+                        margin-top -7px
+                img 
+                    width 25px
+                    margin-bottom 7px
+

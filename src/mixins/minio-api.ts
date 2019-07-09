@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import * as Minio from 'minio';
-import { S3Folder, S3FolderOrObject } from '@/index'
+import { Buffer } from 'buffer';
+import { S3Folder, S3FolderOrObject } from '@/index';
 
 export default Vue.extend({
   props: {
@@ -41,12 +42,14 @@ export default Vue.extend({
       default: null,
     },
   },
+
   data() {
     const data: { client: Minio.Client | null } = {
       client: null,
     };
     return data;
   },
+
   methods: {
     /**
      * Initializes the client with the parameters given to the component.
@@ -96,7 +99,7 @@ export default Vue.extend({
       return new Promise((res) => {
         if (this.client === null) return res([]);
         const objects: Minio.BucketItem[] = [];
-        this.client
+        return this.client
           .listObjects(bucketName, prefix || '', recursive)
           .on('data', (item) => {
             objects.push(item);
@@ -111,11 +114,68 @@ export default Vue.extend({
       });
     },
 
+    async clientUploadFile(bucketName: string, prefix: string, file: File) {
+      if (this.client === null) return false;
+      const filePath = `${prefix}${file.name}`;
+      const presignedUrl = await this.clientGetPutUrl(bucketName, filePath);
+      if (!presignedUrl) return false;
+
+      const xhr = new XMLHttpRequest();
+      if (!xhr.upload) return false;
+      return new Promise((resolve, reject) => {
+        xhr.upload.addEventListener('progress', (e) => {
+          console.log(
+            `Loaded ${e.loaded} of ${e.total} (${((e.loaded * 100) / e.total).toFixed(2)}%)`,
+          );
+        });
+        xhr.onreadystatechange = (e) => {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              console.log('la subida se ha completado con éxito');
+              resolve({ xhr, e });
+            } else {
+              console.log('la subida ha fallado escandalosamente');
+              reject(false);
+            }
+          }
+        };
+        xhr.open('PUT', presignedUrl, true);
+        xhr.setRequestHeader('X-FILENAME', file.name), xhr.send(file);
+      });
+    },
+
+    async clientGetPutUrl(bucketName: string, fileName: string): Promise<string | false> {
+      if (this.client === null) return false;
+      return this.client.presignedPutObject(bucketName, fileName);
+    },
+
+    readFile(file: File): Promise<Buffer> {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onprogress = (e: ProgressEvent) => {
+          console.log(
+            `Loaded ${e.loaded} of ${e.total} (${((e.loaded * 100) / e.total).toFixed(2)}%)`,
+          );
+        };
+        reader.onload = (e: ProgressEvent) => {
+          // @ts-ignore
+          if (e === null || e.target === null || !e.target.result) {
+            reject();
+          }
+          // @ts-ignore
+          resolve(Buffer.from(e.target!.result));
+        };
+        reader.onerror = (e) => {
+          reject(e);
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    },
+
     mapBucketItemFromListToS3OFolder(bucket: Minio.BucketItemFromList): S3Folder {
       return {
         isFolder: true,
         name: bucket.name,
-        creationDate: bucket.creationDate,
         prefix: `${bucket.name}/`,
       };
     },
@@ -125,12 +185,11 @@ export default Vue.extend({
         return {
           isFolder: true,
           name: this.mapItemName(item.prefix),
-          creationDate: item.lastModified,
           prefix: item.prefix,
         };
       }
       return {
-        isObject: true,
+        isFolder: false,
         name: this.mapItemName(item.name),
         lastModified: item.lastModified,
         etag: item.etag,

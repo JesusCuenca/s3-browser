@@ -1,6 +1,6 @@
-export default function (namespace = null, style) {
+export default function (namespace?: string, style?: string) {
   const validatedStyle = style || 'color:yellow;background-color:#333';
-  if (namespace === null) return console;
+  if (namespace === undefined) return console;
 
   return {
     log: console.log.bind(console, `%c${namespace}`, validatedStyle),
