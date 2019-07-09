@@ -19,7 +19,6 @@ export default Vue.extend({
     // @ts-ignore
     const icon = iconsMap[ext] || iconsMap[''];
 
-    console.log(icon);
     return h('img', {
       attrs: {
         src: `/svg/${icon}.svg`,

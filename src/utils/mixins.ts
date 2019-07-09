@@ -1,3 +1,4 @@
+// eslint-ignore-file
 import Vue, { VueConstructor } from 'vue';
 
 export type VueExtendCtor<T> = VueConstructor<Vue & T>;
