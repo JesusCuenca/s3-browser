@@ -1,7 +1,7 @@
 export interface S3Folder {
   isFolder: true;
   name: string;
-  prefix: string,
+  prefix: string;
 }
 
 export interface S3Object {
@@ -17,8 +17,11 @@ export type S3FolderOrObject = S3Folder | S3Object;
 export interface PathItem {
   name: string;
   path: Path;
-  prefix: string,
+  prefix: string;
   key: string;
 }
 
 export type Path = PathItem[];
+
+export type sortDirection = 'ASC' | 'DESC';
+export type sortByOptions = 'name' | 'size' | 'lastModified';
